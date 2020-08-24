@@ -4,6 +4,7 @@ import {InputField} from "./forms/InputField";
 import styled from 'styled-components';
 import {SPACING_L} from "./styles";
 import {signup} from "./api/signup";
+import {useFormik} from "formik";
 
 const Form = styled.form`
     padding: ${SPACING_L};
@@ -12,29 +13,27 @@ const Form = styled.form`
 const TEST_CAMPAIGN_UUID = '46aa3270-d2ee-11ea-a9f0-e9a68ccff42a'
 
 function App() {
-    const [firstName, setFirstName] = useState('')
-    const [lastName, setLastName] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [passwordRepeat, setPasswordRepeat] = useState('')
-    const [error, setError] = useState('')
     const [hasSignedUp, setHasSignedUp] = useState(false)
 
-    const formSubmitHandler = async (e) => {
-        e.preventDefault()
-        if (password !== passwordRepeat) {
-            setError('The two password fields do not match.')
-            return
+    const formik = useFormik({
+        initialValues: {
+            email: '',
+            firstName: '',
+            lastName: '',
+            password: '',
+            passwordRepeat: ''
+        },
+        onSubmit: async values => {
+            const {firstName, lastName, email, password, passwordRepeat} = values
+            if (password !== passwordRepeat) {
+                formik.errors.password = 'The two password fields do not match.'
+                return
+            }
+            await signup({campaignUuid: TEST_CAMPAIGN_UUID, firstName, lastName, email, password})
+            setHasSignedUp(true)
+            formik.setSubmitting(false)
         }
-        setError('')
-        await signup({campaignUuid: TEST_CAMPAIGN_UUID, firstName, lastName, email, password})
-        setHasSignedUp(true)
-    }
-
-    const clearErrorAndUpdate = stateUpdateFn => e => {
-        setError('')
-        stateUpdateFn(e.target.value)
-    }
+    })
 
     if (hasSignedUp) {
         return <p>You've successfully signed up.</p>
@@ -42,25 +41,24 @@ function App() {
 
     return (
         <>
-            {error.length > 0 && <p>{error}</p>}
-            <Form onSubmit={formSubmitHandler}>
-                <InputField labelText='First Name' id='first-name'>
-                    <input name='firstName' type='text' id='first-name' onChange={clearErrorAndUpdate(setFirstName)}/>
+            <Form onSubmit={formik.handleSubmit}>
+                <InputField labelText='First Name' id='first-name' error={formik.errors.firstName}>
+                    <input name='firstName' type='text' id='first-name' onChange={formik.handleChange}/>
                 </InputField>
-                <InputField labelText={'Last Name'} id='last-name'>
-                    <input name='lastName' type='text' id='last-name' onChange={clearErrorAndUpdate(setLastName)}/>
+                <InputField labelText={'Last Name'} id='last-name' error={formik.errors.lastName}>
+                    <input name='lastName' type='text' id='last-name' onChange={formik.handleChange}/>
                 </InputField>
-                <InputField labelText={'Email address'} id='email'>
-                    <input name='email' type='text' id='email' onChange={clearErrorAndUpdate(setEmail)}/>
+                <InputField labelText={'Email address'} id='email' error={formik.errors.email}>
+                    <input name='email' type='text' id='email' onChange={formik.handleChange}/>
                 </InputField>
-                <InputField labelText={'Password'} id='password'>
-                    <input name='password' type='password' id='password' onChange={clearErrorAndUpdate(setPassword)}/>
+                <InputField labelText={'Password'} id='password' error={formik.errors.password}>
+                    <input name='password' type='password' id='password' onChange={formik.handleChange}/>
                 </InputField>
-                <InputField labelText={'Password'} id='password'>
-                    <input name='password' type='password' id='password' onChange={clearErrorAndUpdate(setPasswordRepeat)}/>
+                <InputField labelText={'Password'} id='password' error={formik.errors.password}>
+                    <input name='passwordRepeat' type='password' id='password-repeat' onChange={formik.handleChange}/>
                 </InputField>
 
-                <button type='submit'>Sign up</button>
+                <button type='submit' disabled={formik.isSubmitting}>Sign up</button>
             </Form>
         </>
     )

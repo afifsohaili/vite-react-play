@@ -10,9 +10,10 @@ const InputLabel = styled.label`
     display: block;
 `
 
-export const InputField = ({labelText, id, children}) => (
+export const InputField = ({labelText, id, children, error}) => (
     <InputWrapper>
         <InputLabel htmlFor={id}>{labelText}</InputLabel>
         {children}
+        {error?.length ? error : null}
     </InputWrapper>
 )
