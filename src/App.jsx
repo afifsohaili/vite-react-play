@@ -20,7 +20,7 @@ function App() {
     const [error, setError] = useState('')
     const [hasSignedUp, setHasSignedUp] = useState(false)
 
-    const formSubmit = async (e) => {
+    const formSubmitHandler = async (e) => {
         e.preventDefault()
         if (password !== passwordRepeat) {
             setError('The two password fields do not match.')
@@ -36,11 +36,14 @@ function App() {
         stateUpdateFn(e.target.value)
     }
 
+    if (hasSignedUp) {
+        return <p>You've successfully signed up.</p>
+    }
+
     return (
         <>
-            {hasSignedUp && <p>You've successfully signed up.</p>}
             {error.length > 0 && <p>{error}</p>}
-            <Form onSubmit={formSubmit}>
+            <Form onSubmit={formSubmitHandler}>
                 <InputField labelText='First Name' id='first-name'>
                     <input name='firstName' type='text' id='first-name' onChange={clearErrorAndUpdate(setFirstName)}/>
                 </InputField>
