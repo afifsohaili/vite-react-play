@@ -4,8 +4,9 @@ import {InputField} from "./forms/InputField";
 import styled from 'styled-components';
 import {SPACING_L} from "./styles";
 import {signup} from "./api/signup";
-import {useFormik} from "formik";
+import {Field, Formik, useField, useFormikContext} from "formik";
 import * as Yup from "yup";
+import {validateEmail} from "./api/validate-email";
 
 const Form = styled.form`
     padding: ${SPACING_L};
@@ -24,27 +25,17 @@ const SignupSchema = Yup.object().shape({
 function App() {
     const [hasSignedUp, setHasSignedUp] = useState(false)
 
-    const formik = useFormik({
-        initialValues: {
-            email: '',
-            firstName: '',
-            lastName: '',
-            password: '',
-            passwordRepeat: ''
-        },
-        validationSchema: SignupSchema,
-        onSubmit: async values => {
-            const {firstName, lastName, email, password, passwordRepeat} = values
-            if (password !== passwordRepeat) {
-                formik.errors.password = 'The two password fields do not match.'
-                formik.errors.passwordRepeat = 'The two password fields do not match.'
-                return
-            }
-            await signup({campaignUuid: TEST_CAMPAIGN_UUID, firstName, lastName, email, password})
-            setHasSignedUp(true)
-            formik.setSubmitting(false)
+    const onFormSubmit = async (values, actions) => {
+        const {firstName, lastName, email, password, passwordRepeat} = values
+        if (password !== passwordRepeat) {
+            actions.setFieldError('password', 'The two password fields do not match.')
+            actions.setFieldError('passwordRepeat', 'The two password fields do not match.')
+            return
         }
-    })
+        await signup({campaignUuid: TEST_CAMPAIGN_UUID, firstName, lastName, email, password})
+        setHasSignedUp(true)
+        actions.setSubmitting(false)
+    };
 
     if (hasSignedUp) {
         return <>
@@ -53,28 +44,47 @@ function App() {
         </>
     }
 
+    const initialValues = {
+        email: '',
+        firstName: '',
+        lastName: '',
+        password: '',
+        passwordRepeat: ''
+    };
     return (
-        <>
-            <Form onSubmit={e => formik.handleSubmit(e)}>
-                <InputField labelText='First Name' id='first-name' error={formik.touched.firstName && formik.errors.firstName}>
-                    <input name='firstName' type='text' id='first-name' onChange={formik.handleChange}/>
-                </InputField>
-                <InputField labelText={'Last Name'} id='last-name' error={formik.touched.lastName && formik.errors.lastName}>
-                    <input name='lastName' type='text' id='last-name' onChange={formik.handleChange}/>
-                </InputField>
-                <InputField labelText={'Email address'} id='email' error={formik.touched.email && formik.errors.email}>
-                    <input name='email' type='text' id='email' onChange={formik.handleChange}/>
-                </InputField>
-                <InputField labelText={'Password'} id='password' error={formik.touched.password && formik.errors.password}>
-                    <input name='password' type='password' id='password' onChange={formik.handleChange}/>
-                </InputField>
-                <InputField labelText={'Password'} id='password' error={formik.touched.passwordRepeat && formik.errors.passwordRepeat}>
-                    <input name='passwordRepeat' type='password' id='password-repeat' onChange={formik.handleChange}/>
-                </InputField>
+        <Formik initialValues={initialValues} validationSchema={SignupSchema} onSubmit={onFormSubmit}>
+            {props =>
+                <Form onSubmit={props.handleSubmit}>
+                    <InputField labelText='First Name' id='first-name'
+                                error={props.touched.firstName && props.errors.firstName}>
+                        <input name='firstName' type='text' id='first-name' onChange={props.handleChange}/>
+                    </InputField>
+                    <InputField labelText={'Last Name'} id='last-name'
+                                error={props.touched.lastName && props.errors.lastName}>
+                        <input name='lastName' type='text' id='last-name' onChange={props.handleChange}/>
+                    </InputField>
+                    <Field name="email">
+                        {({field, meta}) => (
+                            <InputField labelText={'Email address'} id='email'
+                                        error={meta.touched && meta.error}>
+                                <input type='text' id='email' {...field}/>
+                            </InputField>
+                        )}
+                    </Field>
+                    <InputField labelText={'Password'} id='password'
+                                error={props.touched.password && props.errors.password}>
+                        <input name='password' type='password' id='password' onChange={props.handleChange}/>
+                    </InputField>
+                    <InputField labelText={'Password'} id='password'
+                                error={props.touched.passwordRepeat && props.errors.passwordRepeat}>
+                        <input name='passwordRepeat' type='password' id='password-repeat'
+                               onChange={props.handleChange}/>
+                    </InputField>
 
-                <button type='submit' disabled={formik.isSubmitting}>Sign up</button>
-            </Form>
-        </>
+                    <button type='submit' disabled={props.isSubmitting}>Sign up</button>
+                </Form>
+            }
+        </Formik>
     )
 }
 
