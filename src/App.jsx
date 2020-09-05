@@ -22,11 +22,15 @@ const SignupSchema = Yup.object().shape({
     passwordRepeat: Yup.string().min(8, 'Password must be at least 8 characters long.').required('Required')
 })
 
-const validateEmailField = async (campaignUuid, email) => {
+const STATUS_VALIDATING_EMAIL = 'STATUS_VALIDATING_EMAIL';
+
+const validateEmailField = async (campaignUuid, email, formik) => {
     if ((email?.length ?? 0) === 0) {
         return true;
     }
+    formik.setStatus(STATUS_VALIDATING_EMAIL)
     const isEmailValid = await validateEmail({campaignUuid, email})
+    formik.setStatus(undefined)
     return isEmailValid ? undefined : 'This email already exists.'
 }
 
@@ -61,35 +65,36 @@ const App = () => {
     };
     return (
         <Formik initialValues={initialValues} validationSchema={SignupSchema} onSubmit={onFormSubmit}>
-            {props =>
-                <Form onSubmit={props.handleSubmit}>
+            {formik =>
+                <Form onSubmit={formik.handleSubmit}>
                     <InputField labelText='First Name' id='first-name'
-                                error={props.touched.firstName && props.errors.firstName}>
-                        <input name='firstName' type='text' id='first-name' onChange={props.handleChange}/>
+                                error={formik.touched.firstName && formik.errors.firstName}>
+                        <input name='firstName' type='text' id='first-name' onChange={formik.handleChange}/>
                     </InputField>
                     <InputField labelText={'Last Name'} id='last-name'
-                                error={props.touched.lastName && props.errors.lastName}>
-                        <input name='lastName' type='text' id='last-name' onChange={props.handleChange}/>
+                                error={formik.touched.lastName && formik.errors.lastName}>
+                        <input name='lastName' type='text' id='last-name' onChange={formik.handleChange}/>
                     </InputField>
-                    <Field name="email" validate={email => validateEmailField(TEST_CAMPAIGN_UUID, email)}>
+                    <Field name="email" validate={email => validateEmailField(TEST_CAMPAIGN_UUID, email, formik)}>
                         {({field, meta}) => (
                             <InputField labelText={'Email address'} id='email'
                                         error={meta.touched && meta.error}>
                                 <input type='text' id='email' {...field}/>
+                                {formik.status === STATUS_VALIDATING_EMAIL && 'Validating...'}
                             </InputField>
                         )}
                     </Field>
                     <InputField labelText={'Password'} id='password'
-                                error={props.touched.password && props.errors.password}>
-                        <input name='password' type='password' id='password' onChange={props.handleChange}/>
+                                error={formik.touched.password && formik.errors.password}>
+                        <input name='password' type='password' id='password' onChange={formik.handleChange}/>
                     </InputField>
                     <InputField labelText={'Password'} id='password'
-                                error={props.touched.passwordRepeat && props.errors.passwordRepeat}>
+                                error={formik.touched.passwordRepeat && formik.errors.passwordRepeat}>
                         <input name='passwordRepeat' type='password' id='password-repeat'
-                               onChange={props.handleChange}/>
+                               onChange={formik.handleChange}/>
                     </InputField>
 
-                    <button type='submit' disabled={props.isSubmitting}>Sign up</button>
+                    <button type='submit' disabled={formik.isSubmitting}>Sign up</button>
                 </Form>
             }
         </Formik>
