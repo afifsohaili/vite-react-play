@@ -64,7 +64,11 @@ const App = () => {
         passwordRepeat: ''
     };
     return (
-        <Formik initialValues={initialValues} validationSchema={SignupSchema} onSubmit={onFormSubmit}>
+        <Formik initialValues={initialValues}
+                validationSchema={SignupSchema}
+                onSubmit={onFormSubmit}
+                validateOnBlur={false}
+                validateOnChange={true}>
             {formik =>
                 <Form onSubmit={formik.handleSubmit}>
                     <InputField labelText='First Name' id='first-name'
