@@ -4,7 +4,7 @@ import {InputField} from "./forms/InputField";
 import styled from 'styled-components';
 import {SPACING_L} from "./styles";
 import {signup} from "./api/signup";
-import {Field, Formik, useField, useFormikContext} from "formik";
+import {Field, Formik} from "formik";
 import * as Yup from "yup";
 import {validateEmail} from "./api/validate-email";
 
@@ -22,7 +22,15 @@ const SignupSchema = Yup.object().shape({
     passwordRepeat: Yup.string().min(8, 'Password must be at least 8 characters long.').required('Required')
 })
 
-function App() {
+const validateEmailField = async (campaignUuid, email) => {
+    if ((email?.length ?? 0) === 0) {
+        return true;
+    }
+    const isEmailValid = await validateEmail({campaignUuid, email})
+    return isEmailValid ? undefined : 'This email already exists.'
+}
+
+const App = () => {
     const [hasSignedUp, setHasSignedUp] = useState(false)
 
     const onFormSubmit = async (values, actions) => {
@@ -63,7 +71,7 @@ function App() {
                                 error={props.touched.lastName && props.errors.lastName}>
                         <input name='lastName' type='text' id='last-name' onChange={props.handleChange}/>
                     </InputField>
-                    <Field name="email">
+                    <Field name="email" validate={email => validateEmailField(TEST_CAMPAIGN_UUID, email)}>
                         {({field, meta}) => (
                             <InputField labelText={'Email address'} id='email'
                                         error={meta.touched && meta.error}>
@@ -86,6 +94,6 @@ function App() {
             }
         </Formik>
     )
-}
+};
 
 export default App
