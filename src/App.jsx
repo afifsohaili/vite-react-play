@@ -25,17 +25,27 @@ const SignupSchema = Yup.object().shape({
 const STATUS_VALIDATING_EMAIL = 'STATUS_VALIDATING_EMAIL';
 
 const validateEmailField = async (campaignUuid, email, formik) => {
+    formik.setStatus(undefined)
     if ((email?.length ?? 0) === 0) {
         return true;
     }
-    formik.setStatus(STATUS_VALIDATING_EMAIL)
-    const isEmailValid = await validateEmail({campaignUuid, email})
+    let errorMessage = undefined
+    try {
+        formik.setStatus(STATUS_VALIDATING_EMAIL)
+        const isEmailValid = await validateEmail({campaignUuid, email})
+        if (!isEmailValid) {
+            errorMessage = 'This email already exists.'
+        }
+    } catch {
+        errorMessage = 'Failed validation. Please choose another email.'
+    }
     formik.setStatus(undefined)
-    return isEmailValid ? undefined : 'This email already exists.'
+    return errorMessage
 }
 
 const App = () => {
     const [hasSignedUp, setHasSignedUp] = useState(false)
+    const [generalError, setGeneralError] = useState('')
 
     const onFormSubmit = async (values, actions) => {
         const {firstName, lastName, email, password, passwordRepeat} = values
@@ -44,9 +54,14 @@ const App = () => {
             actions.setFieldError('passwordRepeat', 'The two password fields do not match.')
             return
         }
-        await signup({campaignUuid: TEST_CAMPAIGN_UUID, firstName, lastName, email, password})
-        setHasSignedUp(true)
-        actions.setSubmitting(false)
+        try {
+            await signup({campaignUuid: TEST_CAMPAIGN_UUID, firstName, lastName, email, password})
+            setHasSignedUp(true)
+        } catch (err) {
+            setGeneralError(`Signup failed. Error: ${err.message}`)
+        } finally {
+            actions.setSubmitting(false)
+        }
     };
 
     if (hasSignedUp) {
@@ -71,6 +86,7 @@ const App = () => {
                 validateOnChange={true}>
             {formik =>
                 <Form onSubmit={formik.handleSubmit}>
+                    {(generalError?.length ?? 0) > 0 && <p>{generalError}</p>}
                     <InputField labelText='First Name' id='first-name'
                                 error={formik.touched.firstName && formik.errors.firstName}>
                         <input name='firstName' type='text' id='first-name' onChange={formik.handleChange}/>
