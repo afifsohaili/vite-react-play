@@ -84,8 +84,8 @@ const App = () => {
         <Formik initialValues={initialValues}
                 validationSchema={SignupSchema}
                 onSubmit={onFormSubmit}
-                validateOnBlur={false}
-                validateOnChange={true}>
+                validateOnBlur={true}
+                validateOnChange={false}>
             {formik =>
                 <SignupForm onSubmit={formik.handleSubmit}>
                     <FormTitle>Create an account</FormTitle>
