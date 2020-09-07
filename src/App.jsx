@@ -9,6 +9,7 @@ import {SignupForm} from "./forms/SignupForm";
 import {PrimaryButton} from "./forms/Button";
 import {SPACING_XL} from "./styles";
 import styled from 'styled-components';
+import {SignupSuccess} from "./forms/SignupSuccess";
 
 const FormTitle = styled.h1`
   margin-bottom: ${SPACING_XL}
@@ -67,10 +68,7 @@ const App = () => {
     };
 
     if (hasSignedUp) {
-        return <>
-            <p>You've successfully signed up.</p>
-            <a href='#' onClick={() => setHasSignedUp(false)}>&laquo; Back</a>
-        </>
+        return <SignupSuccess setHasSignedUp={setHasSignedUp}/>
     }
 
     const initialValues = {
