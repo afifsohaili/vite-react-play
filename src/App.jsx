@@ -120,7 +120,7 @@ const App = () => {
                                      onChange={formik.handleChange}/>
                     </StyledField>
 
-                    <PrimaryButton type=' submit' disabled={formik.isSubmitting}>Sign up</PrimaryButton>
+                    <PrimaryButton type='submit' disabled={formik.isSubmitting}>Sign up</PrimaryButton>
                 </SignupForm>
             }
         </Formik>
