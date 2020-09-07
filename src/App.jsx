@@ -7,7 +7,7 @@ import * as Yup from "yup";
 import {validateEmail} from "./api/validate-email";
 import {SignupForm} from "./forms/SignupForm";
 import {PrimaryButton} from "./forms/Button";
-import {SPACING_L, SPACING_XL} from "./styles";
+import {SPACING_XL} from "./styles";
 import styled from 'styled-components';
 
 const FormTitle = styled.h1`
