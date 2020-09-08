@@ -1,5 +1,14 @@
 import styled from "styled-components";
-import {COLOR_THEME, COLOR_THEME_LIGHT, COLOR_THEME_LIGHTER, COLOR_THEME_LIGHTEST, SPACING, SPACING_S} from "../styles";
+import {
+    COLOR_GREY_DARK,
+    COLOR_GREY_LIGHT,
+    COLOR_THEME,
+    COLOR_THEME_LIGHT,
+    COLOR_THEME_LIGHTER,
+    COLOR_THEME_LIGHTEST,
+    SPACING,
+    SPACING_S
+} from "../styles";
 
 const BaseButton = styled.button`
   border-radius: 1rem 0.25rem 1rem 0.25rem;
@@ -20,8 +29,13 @@ export const PrimaryButton = styled(BaseButton)`
   overflow: hidden;
   z-index: 1;
   background-color: ${COLOR_THEME};
+  
+  &[disabled] {
+    background-color: ${COLOR_GREY_LIGHT};
+    color: ${COLOR_GREY_DARK}
+  }
 
-  &::before {
+  &:not([disabled])::before {
     bottom: 0;
     content: "";
     left: 0;
@@ -33,7 +47,7 @@ export const PrimaryButton = styled(BaseButton)`
     z-index: -1;
   }
 
-  &::after {
+  &:not([disabled])::after {
     bottom: 0;
     content: "";
     left: 0;
@@ -46,7 +60,7 @@ export const PrimaryButton = styled(BaseButton)`
     z-index: -1;
   }
 
-  &:hover::after {
+  &:not([disabled]):hover::after {
     opacity: 1;
   }
 `

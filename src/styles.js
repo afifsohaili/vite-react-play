@@ -4,6 +4,10 @@ export const SPACING = '1rem';
 export const SPACING_L = '1.5rem';
 export const SPACING_XL = '2rem';
 
+export const COLOR_GREY_LIGHT = '#b1b1b1'
+export const COLOR_GREY_BASE = '#838383'
+export const COLOR_GREY_DARK = '#585858'
+
 export const COLOR_PURPLE_BASE = '#4c2d8d'
 export const COLOR_PURPLE_LIGHT = '#6444a5'
 export const COLOR_PURPLE_LIGHTER = '#8767c8'

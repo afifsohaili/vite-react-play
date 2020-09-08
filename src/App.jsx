@@ -10,6 +10,7 @@ import {SPACING_L, SPACING_XL} from "./styles";
 import styled from 'styled-components';
 import {SignupSuccess} from "./components/SignupSuccess";
 import {Logo} from "./components/Logo";
+import {LoadingIndicator} from "./components/LoadingIndicator";
 
 const FormTitle = styled.h3`
   margin-bottom: ${SPACING_XL}
@@ -56,6 +57,12 @@ export const SignupForm = styled.form`
     width: clamp(min(100%, 600px), 33vw, 1000px);
 `
 
+const delay = (delayInSecs) => {
+    return new Promise(resolve => {
+        setTimeout(() => resolve(), delayInSecs * 1000)
+    })
+}
+
 const App = () => {
     const [hasSignedUp, setHasSignedUp] = useState(false)
     const [generalError, setGeneralError] = useState('')
@@ -68,6 +75,7 @@ const App = () => {
             return
         }
         try {
+            await delay(2);
             await signup({campaignUuid: TEST_CAMPAIGN_UUID, firstName, lastName, email, password})
             setHasSignedUp(true)
         } catch (err) {
@@ -133,6 +141,7 @@ const App = () => {
                     </StyledField>
 
                     <PrimaryButton type='submit' disabled={formik.isSubmitting}>Sign up</PrimaryButton>
+                    {formik.isSubmitting && <LoadingIndicator/>}
                 </SignupForm>
             }
         </Formik>
