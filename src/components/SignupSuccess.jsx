@@ -1,7 +1,7 @@
 import React from "react";
 import {COLOR_THEME, SPACING_L, SPACING_XL} from "../styles";
 import styled from 'styled-components';
-import {CheckIcon} from "../icons/CheckIcon";
+import {CheckIcon} from "./icons/CheckIcon";
 
 const Container = styled.div`
   display: flex;

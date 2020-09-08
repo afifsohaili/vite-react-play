@@ -1,18 +1,22 @@
 import React, {useState} from 'react'
 import 'normalize.css'
-import {FieldMessage, StyledField, StyledInput} from "./forms/StyledField";
+import {FieldMessage, StyledField, StyledInput} from "./components/StyledField";
 import {signup} from "./api/signup";
 import {Field, Formik} from "formik";
 import * as Yup from "yup";
 import {validateEmail} from "./api/validate-email";
-import {SignupForm} from "./forms/SignupForm";
-import {PrimaryButton} from "./forms/Button";
-import {SPACING_XL} from "./styles";
+import {PrimaryButton} from "./components/Button";
+import {SPACING_L, SPACING_XL} from "./styles";
 import styled from 'styled-components';
-import {SignupSuccess} from "./forms/SignupSuccess";
+import {SignupSuccess} from "./components/SignupSuccess";
+import {Logo} from "./components/Logo";
 
-const FormTitle = styled.h1`
+const FormTitle = styled.h3`
   margin-bottom: ${SPACING_XL}
+`
+
+const LogoWrapper = styled.header`
+  margin: ${SPACING_XL} 0;
 `
 
 const TEST_CAMPAIGN_UUID = '46aa3270-d2ee-11ea-a9f0-e9a68ccff42a'
@@ -45,6 +49,12 @@ const validateEmailField = async (campaignUuid, email, formik) => {
     formik.setStatus(undefined)
     return errorMessage
 }
+
+export const SignupForm = styled.form`
+    padding: ${SPACING_L};
+    margin: 0 auto;
+    width: clamp(min(100%, 600px), 33vw, 1000px);
+`
 
 const App = () => {
     const [hasSignedUp, setHasSignedUp] = useState(false)
@@ -86,6 +96,9 @@ const App = () => {
                 validateOnChange={false}>
             {formik =>
                 <SignupForm onSubmit={formik.handleSubmit}>
+                    <LogoWrapper>
+                        <Logo>Your Company</Logo>
+                    </LogoWrapper>
                     <FormTitle>Create an account</FormTitle>
                     {(generalError?.length ?? 0) > 0 && <p>{generalError}</p>}
                     <StyledField labelText='First Name' id='first-name'
@@ -102,7 +115,8 @@ const App = () => {
                         {({field, meta}) => (
                             <StyledField labelText={'Email address'} id='email'
                                          error={meta.touched && meta.error}>
-                                <StyledInput type='text' id='email' {...field} placeholder='e.g. john.doe@gmail.com'/>
+                                <StyledInput type='text' id='email' {...field}
+                                             placeholder='e.g. john.doe@gmail.com'/>
                                 {formik.status === STATUS_VALIDATING_EMAIL &&
                                 <FieldMessage>Validating...</FieldMessage>}
                             </StyledField>
