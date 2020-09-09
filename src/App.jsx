@@ -123,7 +123,7 @@ const App = () => {
                         {({field, meta}) => (
                             <StyledField labelText={'Email address'} id='email'
                                          error={meta.touched && meta.error}>
-                                <StyledInput type='text' id='email' {...field}
+                                <StyledInput type='email' id='email' {...field}
                                              placeholder='e.g. john.doe@gmail.com'/>
                                 {formik.status === STATUS_VALIDATING_EMAIL &&
                                 <FieldMessage>Validating...</FieldMessage>}
