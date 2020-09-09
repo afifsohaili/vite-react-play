@@ -13,9 +13,12 @@ export const COLOR_PURPLE_LIGHT = '#6444a5'
 export const COLOR_PURPLE_LIGHTER = '#8767c8'
 export const COLOR_PURPLE_LIGHTEST = '#d1c5e9'
 
-export const COLOR_RED_BASE = '#b32727'
-export const COLOR_RED_DARK = '#700909'
-export const COLOR_RED_DARKER = '#530303'
+export const COLOR_RED_LIGHTEST = '#f1c7c7'
+export const COLOR_RED_LIGHTER = '#e29393'
+export const COLOR_RED_LIGHT = '#d77070'
+export const COLOR_RED_BASE = '#bc4040'
+export const COLOR_RED_DARK = '#a01a1a'
+export const COLOR_RED_DARKER = '#720c0c'
 
 export const COLOR_ERROR = COLOR_RED_BASE
 

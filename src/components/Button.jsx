@@ -11,6 +11,7 @@ import {
 } from "../styles";
 
 const BaseButton = styled.button`
+  --color-shadow: ${COLOR_GREY_LIGHT};
   border-radius: 1rem 0.25rem 1rem 0.25rem;
   border: 0 none;
   box-shadow: 0 1px 5px 0 ${COLOR_THEME_LIGHTEST};
@@ -20,11 +21,12 @@ const BaseButton = styled.button`
   transition: box-shadow 0.3s ease-out;
 
   &:hover {
-    box-shadow: 0 3px 10px 0 ${COLOR_THEME_LIGHTEST};
+    box-shadow: 0 3px 10px 0 var(--color-shadow);
   }
 `
 
 export const PrimaryButton = styled(BaseButton)`
+  --color-shadow: ${COLOR_THEME_LIGHT};
   color: #fff;
   overflow: hidden;
   z-index: 1;

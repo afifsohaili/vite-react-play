@@ -2,6 +2,7 @@ import React from "react";
 import {COLOR_THEME, SPACING_L, SPACING_XL} from "../styles";
 import styled from 'styled-components';
 import {CheckIcon} from "./icons/CheckIcon";
+import {Button} from "./Button";
 
 const Container = styled.div`
   display: flex;
@@ -18,12 +19,16 @@ const Message = styled.p`
   margin: 0 auto;
 `
 
+const BackButton = styled(Button)`
+  align-self: center;
+`
+
 export const SignupSuccess = ({setHasSignedUp}) => {
     return <Container>
         <CheckIcon color={COLOR_THEME} size={2}/>
         <Message>
             You've successfully signed up.
         </Message>
-        <a href='#' onClick={() => setHasSignedUp(false)}>&laquo; Back</a>
+        <BackButton onClick={() => setHasSignedUp(false)}>&laquo; Back</BackButton>
     </Container>
 }

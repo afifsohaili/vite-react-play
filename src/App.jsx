@@ -11,6 +11,7 @@ import styled from 'styled-components';
 import {SignupSuccess} from "./components/SignupSuccess";
 import {Logo} from "./components/Logo";
 import {LoadingIndicator} from "./components/LoadingIndicator";
+import {ErrorBanner} from "./components/Banner";
 
 const FormTitle = styled.h3`
   margin-bottom: ${SPACING_XL}
@@ -75,6 +76,7 @@ const App = () => {
             return
         }
         try {
+            setGeneralError('')
             await delay(2);
             await signup({campaignUuid: TEST_CAMPAIGN_UUID, firstName, lastName, email, password})
             setHasSignedUp(true)
@@ -108,7 +110,7 @@ const App = () => {
                         <Logo>Your Company</Logo>
                     </LogoWrapper>
                     <FormTitle>Create an account</FormTitle>
-                    {(generalError?.length ?? 0) > 0 && <p>{generalError}</p>}
+                    {(generalError?.length ?? 0) > 0 && <ErrorBanner>{generalError}</ErrorBanner>}
                     <StyledField labelText='First Name' id='first-name'
                                  error={formik.touched.firstName && formik.errors.firstName}>
                         <StyledInput name='firstName' type='text' id='first-name' placeholder='e.g. John'
